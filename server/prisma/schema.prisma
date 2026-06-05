@@ -1,0 +1,142 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  BUYER
+  SELLER
+  ADMIN
+}
+
+enum ProductStatus {
+  ACTIVE
+  RESERVED
+  SOLD
+  INACTIVE
+}
+
+enum ProductCategory {
+  GAME_ACCOUNT
+  TOP_UP
+  BOOSTING
+  ITEM
+  OTHER
+}
+
+enum OrderStatus {
+  PENDING_PAYMENT
+  PAID
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+  DISPUTED
+}
+
+enum PaymentMethod {
+  MIDTRANS
+  USDT
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  EXPIRED
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  username     String   @unique
+  passwordHash String   @map("password_hash")
+  role         Role     @default(BUYER)
+  displayName  String?  @map("display_name")
+  avatarUrl    String?  @map("avatar_url")
+  bio          String?
+  balance      Decimal  @default(0) @db.Decimal(18, 2)
+  isVerified   Boolean  @default(false) @map("is_verified")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  products     Product[]
+  buyerOrders  Order[]   @relation("BuyerOrders")
+  reviews      Review[]  @relation("BuyerReviews")
+  receivedReviews Review[] @relation("SellerReviews")
+
+  @@map("users")
+}
+
+model Product {
+  id          String          @id @default(cuid())
+  seller      User            @relation(fields: [sellerId], references: [id])
+  sellerId    String          @map("seller_id")
+  title       String
+  description String
+  category    ProductCategory
+  game        String
+  price       Decimal         @db.Decimal(18, 2)
+  status      ProductStatus   @default(ACTIVE)
+  imageUrls   String[]        @map("image_urls")
+  metadata    Json?           // flexible: rank, server, level, etc.
+  createdAt   DateTime        @default(now()) @map("created_at")
+  updatedAt   DateTime        @updatedAt @map("updated_at")
+
+  orders      Order[]
+
+  @@map("products")
+}
+
+model Order {
+  id            String        @id @default(cuid())
+  buyer         User          @relation("BuyerOrders", fields: [buyerId], references: [id])
+  buyerId       String        @map("buyer_id")
+  product       Product       @relation(fields: [productId], references: [id])
+  productId     String        @map("product_id")
+  amount        Decimal       @db.Decimal(18, 2)
+  status        OrderStatus   @default(PENDING_PAYMENT)
+  paymentMethod PaymentMethod @map("payment_method")
+  notes         String?
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @updatedAt @map("updated_at")
+
+  payment       Payment?
+  review        Review?
+
+  @@map("orders")
+}
+
+model Payment {
+  id            String        @id @default(cuid())
+  order         Order         @relation(fields: [orderId], references: [id])
+  orderId       String        @unique @map("order_id")
+  method        PaymentMethod
+  status        PaymentStatus @default(PENDING)
+  gatewayTxId   String?       @map("gateway_tx_id")
+  snapToken     String?       @map("snap_token")   // Midtrans Snap token
+  paymentUrl    String?       @map("payment_url")
+  paidAt        DateTime?     @map("paid_at")
+  expiredAt     DateTime?     @map("expired_at")
+  createdAt     DateTime      @default(now()) @map("created_at")
+
+  @@map("payments")
+}
+
+model Review {
+  id         String   @id @default(cuid())
+  order      Order    @relation(fields: [orderId], references: [id])
+  orderId    String   @unique @map("order_id")
+  buyer      User     @relation("BuyerReviews", fields: [buyerId], references: [id])
+  buyerId    String   @map("buyer_id")
+  seller     User     @relation("SellerReviews", fields: [sellerId], references: [id])
+  sellerId   String   @map("seller_id")
+  rating     Int      // 1-5
+  comment    String?
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@map("reviews")
+}
