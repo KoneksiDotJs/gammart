@@ -7,7 +7,7 @@ on:
     branches: [main, dev]
 
 jobs:
-  # ─── Server ──────────────────────────────────────────────────────────────
+  # ─── Backend ──────────────────────────────────────────────────────────────
   server:
     name: Server – Type Check & Build
     runs-on: ubuntu-latest
@@ -16,11 +16,11 @@ jobs:
       postgres:
         image: postgres:16-alpine
         env:
-          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          POSTGRES_USER: gamemarket
+          POSTGRES_PASSWORD: gamemarket_test
+          POSTGRES_DB: gamemarket_test
         ports:
-          - '${{ secrets.POSTGRES_PORT }}'
+          - 5432:5432
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -37,7 +37,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: [20, 22, 24]
+          node-version: '20'
           cache: 'npm'
           cache-dependency-path: server/package-lock.json
 
@@ -47,12 +47,12 @@ jobs:
       - name: Generate Prisma client
         run: npx prisma generate
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DATABASE_URL: postgresql://gamemarket:gamemarket_test@localhost:5432/gamemarket_test
 
       - name: Run migrations
         run: npx prisma migrate deploy
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DATABASE_URL: postgresql://gamemarket:gamemarket_test@localhost:5432/gamemarket_test
 
       - name: Type check
         run: npx tsc --noEmit
@@ -60,9 +60,9 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DATABASE_URL: postgresql://gamemarket:gamemarket_test@localhost:5432/gamemarket_test
 
-  # ─── Client ─────────────────────────────────────────────────────────────
+  # ─── Frontend ─────────────────────────────────────────────────────────────
   client:
     name: Client – Type Check & Build
     runs-on: ubuntu-latest
@@ -77,7 +77,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: [20, 22, 24]
+          node-version: '20'
           cache: 'npm'
           cache-dependency-path: client/package-lock.json
 
@@ -90,5 +90,5 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          VITE_API_URL: ${{ secrets.VITE_API_URL }}
-          VITE_MIDTRANS_CLIENT_KEY: ${{ secrets.VITE_MIDTRANS_CLIENT_KEY }}
+          VITE_API_URL: http://localhost:5000
+          VITE_MIDTRANS_CLIENT_KEY: sandbox_key
