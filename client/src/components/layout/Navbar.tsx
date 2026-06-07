@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom'
-import { ShoppingBag, User, LogOut, PlusSquare, Package, TrendingUp } from 'lucide-react'
+import { ShoppingBag, LogOut, PlusSquare, Package, TrendingUp } from 'lucide-react'
 import { useAuthStore } from '../../store/auth.store'
 
 export const Navbar = () => {

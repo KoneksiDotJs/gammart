@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { ShieldCheck, User, Tag } from 'lucide-react'
+import { ShieldCheck } from 'lucide-react'
 import { useProduct, useCreateOrder } from '../../hooks'
 import { useAuthStore } from '../../store/auth.store'
 import { PaymentMethod } from '../../types'

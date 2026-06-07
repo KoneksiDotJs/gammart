@@ -1,5 +1,5 @@
 import { prisma } from '../config/prisma'
-import { ProductCategory, ProductStatus } from '@prisma/client'
+import { ProductCategory, ProductStatus, Prisma } from '@prisma/client'
 
 export interface CreateProductInput {
   sellerId: string
@@ -9,7 +9,7 @@ export interface CreateProductInput {
   game: string
   price: number
   imageUrls?: string[]
-  metadata?: Record<string, unknown>
+  metadata?: Prisma.InputJsonValue
 }
 
 export interface FindProductsQuery {
