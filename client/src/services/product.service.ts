@@ -39,4 +39,8 @@ export const productApi = {
     const res = await apiClient.get<ApiResponse<Product[]>>('/products/my/listings')
     return res.data.data!
   },
+
+  deactivateProduct: async (id: string): Promise<void> => {
+    await apiClient.patch(`/products/${id}/deactivate`)
+  },
 }

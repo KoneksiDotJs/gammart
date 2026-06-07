@@ -39,6 +39,17 @@ export const useCreateProduct = () => {
   })
 }
 
+export const useDeactivateProduct = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: productApi.deactivateProduct,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['my-listings'] })
+    },
+  })
+}
+
 // ─── Order Hooks ──────────────────────────────────────────────────────────────
 
 export const useMyOrders = () => {

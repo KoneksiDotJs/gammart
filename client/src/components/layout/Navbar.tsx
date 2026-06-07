@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom'
-import { ShoppingBag, User, LogOut, PlusSquare, Package } from 'lucide-react'
+import { ShoppingBag, User, LogOut, PlusSquare, Package, TrendingUp } from 'lucide-react'
 import { useAuthStore } from '../../store/auth.store'
 
 export const Navbar = () => {
@@ -18,7 +18,7 @@ export const Navbar = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 text-white font-bold text-xl">
             <ShoppingBag className="w-6 h-6 text-brand-500" />
-            GAMMART
+            Gammart
           </Link>
 
           {/* Nav links */}
@@ -30,13 +30,22 @@ export const Navbar = () => {
             {isAuthenticated ? (
               <>
                 {(user?.role === 'SELLER' || user?.role === 'ADMIN') && (
-                  <Link
-                    to="/seller/listings/new"
-                    className="flex items-center gap-1.5 text-gray-300 hover:text-white text-sm transition-colors"
-                  >
-                    <PlusSquare className="w-4 h-4" />
-                    Sell
-                  </Link>
+                  <>
+                    <Link
+                      to="/seller/dashboard"
+                      className="flex items-center gap-1.5 text-gray-300 hover:text-white text-sm transition-colors"
+                    >
+                      <TrendingUp className="w-4 h-4" />
+                      Dashboard
+                    </Link>
+                    <Link
+                      to="/seller/listings/new"
+                      className="flex items-center gap-1.5 text-gray-300 hover:text-white text-sm transition-colors"
+                    >
+                      <PlusSquare className="w-4 h-4" />
+                      Sell
+                    </Link>
+                  </>
                 )}
 
                 <Link

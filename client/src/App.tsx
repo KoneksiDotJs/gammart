@@ -11,6 +11,10 @@ import { LoginPage } from './pages/auth/LoginPage'
 import { RegisterPage } from './pages/auth/RegisterPage'
 import { ProductListingPage } from './pages/buyer/ProductListingPage'
 import { ProductDetailPage } from './pages/buyer/ProductDetailPage'
+import { OrdersPage } from './pages/buyer/OrdersPage'
+import { OrderDetailPage } from './pages/buyer/OrderDetailPage'
+import { CreateListingPage } from './pages/seller/CreateListingPage'
+import { SellerDashboard } from './pages/seller/SellerDashboard'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -41,15 +45,14 @@ const AppRoutes = () => {
 
         {/* Protected — any authenticated user */}
         <Route element={<ProtectedRoute />}>
-          {/* Orders pages go here */}
-          {/* <Route path="/orders" element={<OrdersPage />} /> */}
-          {/* <Route path="/orders/:id" element={<OrderDetailPage />} /> */}
+          <Route path="/orders" element={<OrdersPage />} />
+          <Route path="/orders/:id" element={<OrderDetailPage />} />
         </Route>
 
         {/* Protected — sellers only */}
         <Route element={<ProtectedRoute allowedRoles={['SELLER', 'ADMIN']} />}>
-          {/* <Route path="/seller/listings/new" element={<CreateListingPage />} /> */}
-          {/* <Route path="/seller/dashboard" element={<SellerDashboard />} /> */}
+          <Route path="/seller/listings/new" element={<CreateListingPage />} />
+          <Route path="/seller/dashboard" element={<SellerDashboard />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/products" replace />} />
