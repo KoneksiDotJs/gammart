@@ -18,14 +18,11 @@ app.use(cors({
   credentials: true,
 }))
 
-// Parse JSON — but use raw body for payment webhooks (signature verification needs raw bytes)
-app.use((req, res, next) => {
-  if (req.path.includes('/webhook')) {
-    express.raw({ type: 'application/json' })(req, res, next)
-  } else {
-    express.json()(req, res, next)
-  }
-})
+// Parse JSON for all routes.
+// Midtrans webhook verification works with parsed JSON — it re-fetches
+// the transaction status server-side using the order_id from the body,
+// so raw bytes are not needed.
+app.use(express.json())
 
 // ─── Health Check ─────────────────────────────────────────────────────────────
 

@@ -96,13 +96,27 @@ export const orderService = {
   /**
    * Handle Midtrans payment webhook.
    * Called when Midtrans POSTs a notification to our /payments/webhook endpoint.
+   *
+   * Security flow:
+   * 1. Verify SHA512 signature to confirm the request is genuinely from Midtrans
+   * 2. Re-fetch transaction status server-side (never trust the body alone)
+   * 3. Update order + payment records based on confirmed status
    */
   handleMidtransWebhook: async (notification: Record<string, string>) => {
-    const statusResponse = await midtransService.verifyNotification(notification)
+    // Step 1 — verify signature
+    const isValid = midtransService.verifySignature(notification as any)
+    if (!isValid) {
+      throw new AppError('Invalid webhook signature', 400, 'INVALID_SIGNATURE')
+    }
 
-    const orderId: string = statusResponse.order_id
+    const orderId: string = notification.order_id
+
+    // Step 2 — re-fetch authoritative status from Midtrans
+    const statusResponse = await midtransService.getTransactionStatus(orderId)
+
     const transactionStatus: string = statusResponse.transaction_status
-    const fraudStatus: string = statusResponse.fraud_status
+    const fraudStatus: string       = statusResponse.fraud_status ?? ''
+    const transactionId: string     = statusResponse.transaction_id
 
     const isSuccess =
       transactionStatus === 'capture'
@@ -111,25 +125,24 @@ export const orderService = {
 
     const isFailed =
       transactionStatus === 'cancel' ||
-      transactionStatus === 'deny' ||
+      transactionStatus === 'deny'   ||
       transactionStatus === 'expire'
 
     if (isSuccess) {
       await orderRepository.updatePaymentByOrderId(orderId, {
         status: PaymentStatus.SUCCESS,
-        gatewayTxId: statusResponse.transaction_id,
+        gatewayTxId: transactionId,
         paidAt: new Date(),
       })
-
       await orderRepository.updateStatus(orderId, OrderStatus.PAID)
+
     } else if (isFailed) {
       await orderRepository.updatePaymentByOrderId(orderId, {
         status: PaymentStatus.FAILED,
       })
-
       await orderRepository.updateStatus(orderId, OrderStatus.CANCELLED)
 
-      // Release the product back to active
+      // Release the product back to active so others can buy it
       const order = await orderRepository.findById(orderId)
       if (order) {
         await productRepository.updateStatus(order.productId, ProductStatus.ACTIVE)

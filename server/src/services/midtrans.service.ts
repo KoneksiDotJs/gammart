@@ -1,3 +1,4 @@
+import crypto from 'crypto'
 import { env } from '../config/env'
 
 // Note: midtrans-client doesn't have great TS types, so we type what we need
@@ -20,6 +21,17 @@ export interface MidtransTransactionDetails {
 export interface MidtransSnapResult {
   token: string
   redirectUrl: string
+}
+
+export interface MidtransNotification {
+  order_id: string
+  status_code: string
+  gross_amount: string
+  signature_key: string
+  transaction_status: string
+  fraud_status?: string
+  transaction_id: string
+  [key: string]: string | undefined
 }
 
 export const midtransService = {
@@ -58,11 +70,27 @@ export const midtransService = {
   },
 
   /**
-   * Verify a webhook notification from Midtrans.
-   * Midtrans sends POST requests to your webhook URL when payment status changes.
+   * Verify the signature of an incoming Midtrans webhook notification.
+   *
+   * Midtrans signs every notification with:
+   *   SHA512( order_id + status_code + gross_amount + server_key )
+   *
+   * We verify this before trusting any status update.
    */
-  verifyNotification: async (notification: Record<string, string>) => {
-    const statusResponse = await snap.transaction.notification(notification)
-    return statusResponse
+  verifySignature: (notification: MidtransNotification): boolean => {
+    const { order_id, status_code, gross_amount, signature_key } = notification
+    const expected = crypto
+      .createHash('sha512')
+      .update(`${order_id}${status_code}${gross_amount}${env.midtrans.serverKey}`)
+      .digest('hex')
+    return expected === signature_key
+  },
+
+  /**
+   * Fetch the latest transaction status from Midtrans using the order_id.
+   * More reliable than trusting the notification body alone.
+   */
+  getTransactionStatus: async (orderId: string) => {
+    return snap.transaction.status(orderId)
   },
 }
