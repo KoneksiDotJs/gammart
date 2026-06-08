@@ -2,7 +2,9 @@ import { orderRepository } from '../repositories/order.repository'
 import { productRepository } from '../repositories/product.repository'
 import { authRepository } from '../repositories/auth.repository'
 import { midtransService } from './midtrans.service'
+import { emailService } from './email.service'
 import { AppError } from '../utils/appError'
+import { env } from '../config/env'
 import { OrderStatus, PaymentMethod, ProductStatus, PaymentStatus } from '@prisma/client'
 
 export interface CreateOrderInput {
@@ -51,6 +53,23 @@ export const orderService = {
 
     // Reserve the product so it's not sold twice
     await productRepository.updateStatus(input.productId, ProductStatus.RESERVED)
+
+    // Notify seller — fire-and-forget, never blocks the response
+    const seller = await authRepository.findById(product.sellerId)
+    const buyer  = await authRepository.findById(input.buyerId)
+    if (seller?.email) {
+      emailService.notifySellerNewOrder(seller.email, {
+        sellerName:    seller.displayName || seller.username || 'Seller',
+        buyerName:     buyer?.displayName  || buyer?.username  || 'A buyer',
+        productTitle:  product.title,
+        productGame:   product.game,
+        orderId:       order.id,
+        amount:        amount,
+        paymentMethod: input.paymentMethod,
+        notes:         input.notes,
+        orderUrl:      `${env.appUrl}/orders/${order.id}`,
+      })
+    }
 
     // Initialize payment based on method
     if (input.paymentMethod === PaymentMethod.MIDTRANS) {
@@ -136,6 +155,23 @@ export const orderService = {
       })
       await orderRepository.updateStatus(orderId, OrderStatus.PAID)
 
+      // Notify seller to deliver — fetch full order for context
+      const paidOrder = await orderRepository.findById(orderId)
+      if (paidOrder) {
+        const seller = await authRepository.findById(paidOrder.product.sellerId)
+        if (seller?.email) {
+          emailService.notifySellerPaymentConfirmed(seller.email, {
+            sellerName:   seller.displayName  || seller.username  || 'Seller',
+            buyerName:    paidOrder.buyer.displayName || paidOrder.buyer.username || 'Buyer',
+            productTitle: paidOrder.product.title,
+            orderId:      paidOrder.id,
+            amount:       Number(paidOrder.amount),
+            notes:        paidOrder.notes ?? undefined,
+            orderUrl:     `${env.appUrl}/orders/${paidOrder.id}`,
+          })
+        }
+      }
+
     } else if (isFailed) {
       await orderRepository.updatePaymentByOrderId(orderId, {
         status: PaymentStatus.FAILED,
@@ -191,6 +227,23 @@ export const orderService = {
     }
 
     await productRepository.updateStatus(order.productId, ProductStatus.SOLD)
-    return orderRepository.updateStatus(orderId, OrderStatus.COMPLETED)
+    const completed = await orderRepository.updateStatus(orderId, OrderStatus.COMPLETED)
+
+    // Notify buyer their product has been delivered
+    const buyer  = await authRepository.findById(order.buyerId)
+    const seller = await authRepository.findById(order.product.sellerId)
+    if (buyer?.email) {
+      emailService.notifyBuyerOrderDelivered(buyer.email, {
+        buyerName:    buyer.displayName  || buyer.username  || 'Buyer',
+        sellerName:   seller?.displayName || seller?.username || 'Seller',
+        productTitle: order.product.title,
+        productGame:  order.product.game,
+        orderId:      order.id,
+        amount:       Number(order.amount),
+        orderUrl:     `${env.appUrl}/orders/${order.id}`,
+      })
+    }
+
+    return completed
   },
 }
