@@ -8,6 +8,7 @@ import {
 import { useOrder, useCompleteOrder } from '../../hooks'
 import { useAuthStore } from '../../store/auth.store'
 import { OrderStatus } from '../../types'
+import { ReviewSection } from '../../components/ui/ReviewSection'
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -489,6 +490,13 @@ export const OrderDetailPage = () => {
             </Link>
           </div>
         )}
+
+        {/* Review section — only shown to buyer on completed orders */}
+        <ReviewSection
+          orderId={order.id}
+          isBuyer={isBuyer}
+          orderStatus={order.status}
+        />
 
       </div>
     </div>

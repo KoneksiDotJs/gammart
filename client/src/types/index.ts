@@ -58,12 +58,38 @@ export interface Order {
   paymentMethod: PaymentMethod
   notes?: string
   payment?: Payment
+  review?: Review
   createdAt: string
 }
 
 // ─── API shapes ───────────────────────────────────────────────────────────────
 
 export interface ApiResponse<T = unknown> {
+  success: boolean
+  message?: string
+  data?: T
+}
+
+export interface Review {
+  id: string
+  orderId: string
+  buyerId: string
+  buyer: Pick<User, 'id' | 'username' | 'displayName' | 'avatarUrl'>
+  sellerId: string
+  rating: number
+  comment?: string
+  createdAt: string
+}
+export interface SellerReviewStats {
+  average: number | null
+  total: number
+}
+
+export interface SellerReviewsResponse<T = unknown> {
+  reviews: (Review & {
+    order: { product: { title: string; game: string } }
+  })[]
+  stats: SellerReviewStats
   success: boolean
   message?: string
   data?: T

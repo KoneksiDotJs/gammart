@@ -8,6 +8,8 @@ import authRoutes from './routes/auth.routes'
 import productRoutes from './routes/product.routes'
 import orderRoutes from './routes/order.routes'
 import paymentRoutes from './routes/payment.routes'
+import reviewRoutes from './routes/review.routes'
+import sellerRoutes from './routes/seller.routes'
 
 const app = express()
 
@@ -35,7 +37,9 @@ app.get('/health', (req, res) => {
 app.use('/api/auth', authRoutes)
 app.use('/api/products', productRoutes)
 app.use('/api/orders', orderRoutes)
+app.use('/api/orders/:orderId/review', reviewRoutes)
 app.use('/api/payments', paymentRoutes)
+app.use('/api/sellers', sellerRoutes)
 
 // ─── 404 Handler ──────────────────────────────────────────────────────────────
 

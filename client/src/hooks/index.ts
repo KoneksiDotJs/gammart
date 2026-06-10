@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { productApi, ProductFilters } from '../services/product.service'
 import { orderApi } from '../services/order.service'
+import { reviewApi } from '../services/review.service'
 import { PaymentMethod } from '../types'
 
 // ─── Product Hooks ────────────────────────────────────────────────────────────
@@ -94,5 +95,36 @@ export const useCompleteOrder = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['seller-orders'] })
     },
+  })
+}
+
+// ─── Review Hooks ─────────────────────────────────────────────────────────────
+
+export const useOrderReview = (orderId: string) => {
+  return useQuery({
+    queryKey: ['review', orderId],
+    queryFn: () => reviewApi.getReviewByOrder(orderId),
+    enabled: !!orderId,
+  })
+}
+
+export const useSubmitReview = (orderId: string) => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (data: { rating: number; comment?: string }) =>
+      reviewApi.submitReview(orderId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['review', orderId] })
+      queryClient.invalidateQueries({ queryKey: ['orders', orderId] })
+    },
+  })
+}
+
+export const useSellerReviews = (sellerId: string) => {
+  return useQuery({
+    queryKey: ['seller-reviews', sellerId],
+    queryFn: () => reviewApi.getSellerReviews(sellerId),
+    enabled: !!sellerId,
   })
 }

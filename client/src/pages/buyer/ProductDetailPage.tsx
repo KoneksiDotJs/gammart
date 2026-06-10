@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { ShieldCheck } from 'lucide-react'
-import { useProduct, useCreateOrder } from '../../hooks'
+import { ShieldCheck, Tag } from 'lucide-react'
+import { useProduct, useCreateOrder, useSellerReviews } from '../../hooks'
 import { useAuthStore } from '../../store/auth.store'
 import { PaymentMethod } from '../../types'
+import { StarRating } from '../../components/ui/ReviewSection'
 
 const formatPrice = (price: number) =>
   new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(price)
@@ -13,6 +14,7 @@ export const ProductDetailPage = () => {
   const navigate = useNavigate()
   const { isAuthenticated } = useAuthStore()
   const { data: product, isLoading } = useProduct(id!)
+  const { data: sellerReviews } = useSellerReviews(product?.sellerId ?? '')
   const createOrder = useCreateOrder()
 
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('MIDTRANS')
@@ -98,6 +100,17 @@ export const ProductDetailPage = () => {
               <div>
                 <p className="text-white font-medium text-sm">{product.seller.displayName || product.seller.username}</p>
                 <p className="text-gray-500 text-xs">@{product.seller.username}</p>
+                {sellerReviews && sellerReviews.stats.total > 0 && (
+                  <div className="flex items-center gap-1.5 mt-1">
+                    <StarRating value={Math.round(sellerReviews.stats.average ?? 0)} readonly size="sm" />
+                    <span className="text-yellow-400 text-xs font-medium">
+                      {sellerReviews.stats.average?.toFixed(1)}
+                    </span>
+                    <span className="text-gray-600 text-xs">
+                      ({sellerReviews.stats.total} reviews)
+                    </span>
+                  </div>
+                )}
               </div>
               <ShieldCheck className="ml-auto w-5 h-5 text-brand-500" />
             </div>
