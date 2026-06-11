@@ -1,10 +1,15 @@
 import { apiClient } from './api.client'
 import { ApiResponse, PaginatedResponse, Product, ProductCategory } from '../types'
 
+export type SortBy = 'newest' | 'oldest' | 'price_asc' | 'price_desc'
+
 export interface ProductFilters {
   category?: ProductCategory
   game?: string
   search?: string
+  minPrice?: number
+  maxPrice?: number
+  sortBy?: SortBy
   page?: number
   limit?: number
 }

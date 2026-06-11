@@ -1,5 +1,5 @@
 import { prisma } from '../config/prisma'
-import { ProductCategory, ProductStatus, Prisma } from '@prisma/client'
+import { Prisma, ProductCategory, ProductStatus } from '@prisma/client'
 
 export interface CreateProductInput {
   sellerId: string
@@ -12,16 +12,33 @@ export interface CreateProductInput {
   metadata?: Prisma.InputJsonValue
 }
 
+export type SortBy = 'newest' | 'oldest' | 'price_asc' | 'price_desc'
+
 export interface FindProductsQuery {
   category?: ProductCategory
   game?: string
   search?: string
+  minPrice?: number
+  maxPrice?: number
+  sortBy?: SortBy
   page?: number
   limit?: number
 }
 
+const SORT_MAP: Record<SortBy, object> = {
+  newest:     { createdAt: 'desc' },
+  oldest:     { createdAt: 'asc' },
+  price_asc:  { price: 'asc' },
+  price_desc: { price: 'desc' },
+}
+
 export const productRepository = {
-  findMany: async ({ category, game, search, page = 1, limit = 20 }: FindProductsQuery) => {
+  findMany: async ({
+    category, game, search,
+    minPrice, maxPrice,
+    sortBy = 'newest',
+    page = 1, limit = 20,
+  }: FindProductsQuery) => {
     const skip = (page - 1) * limit
 
     const where = {
@@ -30,10 +47,16 @@ export const productRepository = {
       ...(game && { game: { contains: game, mode: 'insensitive' as const } }),
       ...(search && {
         OR: [
-          { title: { contains: search, mode: 'insensitive' as const } },
+          { title:       { contains: search, mode: 'insensitive' as const } },
           { description: { contains: search, mode: 'insensitive' as const } },
-          { game: { contains: search, mode: 'insensitive' as const } },
+          { game:        { contains: search, mode: 'insensitive' as const } },
         ],
+      }),
+      ...((minPrice !== undefined || maxPrice !== undefined) && {
+        price: {
+          ...(minPrice !== undefined && { gte: minPrice }),
+          ...(maxPrice !== undefined && { lte: maxPrice }),
+        },
       }),
     }
 
@@ -42,7 +65,7 @@ export const productRepository = {
         where,
         skip,
         take: limit,
-        orderBy: { createdAt: 'desc' },
+        orderBy: SORT_MAP[sortBy],
         include: {
           seller: {
             select: { id: true, username: true, displayName: true, avatarUrl: true },

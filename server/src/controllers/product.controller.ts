@@ -6,14 +6,17 @@ import { ProductCategory } from '@prisma/client'
 
 export const productController = {
   getProducts: asyncHandler(async (req: Request, res: Response) => {
-    const { category, game, search, page, limit } = req.query
+    const { category, game, search, page, limit, minPrice, maxPrice, sortBy } = req.query
 
     const result = await productService.getProducts({
-      category: category as ProductCategory | undefined,
-      game: game as string | undefined,
-      search: search as string | undefined,
-      page: page ? parseInt(page as string) : undefined,
-      limit: limit ? parseInt(limit as string) : undefined,
+      category:  category  as ProductCategory | undefined,
+      game:      game      as string | undefined,
+      search:    search    as string | undefined,
+      sortBy:    sortBy    as any,
+      minPrice:  minPrice  ? parseInt(minPrice  as string) : undefined,
+      maxPrice:  maxPrice  ? parseInt(maxPrice  as string) : undefined,
+      page:      page      ? parseInt(page      as string) : undefined,
+      limit:     limit     ? parseInt(limit     as string) : undefined,
     })
 
     res.json({ success: true, ...result })

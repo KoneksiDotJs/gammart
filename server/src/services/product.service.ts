@@ -4,11 +4,11 @@ import { ProductStatus } from '@prisma/client'
 
 export const productService = {
   /**
-   * Get paginated list of active products with optional filters.
+   * Get paginated list of active products with optional filters and sorting.
    */
   getProducts: async (query: FindProductsQuery) => {
-    const limit = Math.min(query.limit || 20, 100) // cap at 100
-    const page = Math.max(query.page || 1, 1)
+    const limit = Math.min(query.limit || 20, 100)
+    const page  = Math.max(query.page  || 1,  1)
 
     const { products, total } = await productRepository.findMany({ ...query, page, limit })
 
