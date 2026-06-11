@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
-import { ShieldCheck, Tag } from 'lucide-react'
+import { useParams, useNavigate, Link } from 'react-router-dom'
+import { ShieldCheck } from 'lucide-react'
 import { useProduct, useCreateOrder, useSellerReviews } from '../../hooks'
 import { useAuthStore } from '../../store/auth.store'
 import { PaymentMethod } from '../../types'
@@ -93,12 +93,15 @@ export const ProductDetailPage = () => {
             </div>
 
             {/* Seller info */}
-            <div className="bg-gray-900 border border-gray-800 rounded-xl p-4 flex items-center gap-3">
+            <Link
+              to={`/sellers/${product.seller.username}`}
+              className="bg-gray-900 border border-gray-800 hover:border-brand-500/40 rounded-xl p-4 flex items-center gap-3 transition-colors group"
+            >
               <div className="w-10 h-10 rounded-full bg-brand-600 flex items-center justify-center text-white font-bold">
                 {product.seller.displayName?.[0]?.toUpperCase() || product.seller.username[0].toUpperCase()}
               </div>
               <div>
-                <p className="text-white font-medium text-sm">{product.seller.displayName || product.seller.username}</p>
+                <p className="text-white font-medium text-sm group-hover:text-brand-400 transition-colors">{product.seller.displayName || product.seller.username}</p>
                 <p className="text-gray-500 text-xs">@{product.seller.username}</p>
                 {sellerReviews && sellerReviews.stats.total > 0 && (
                   <div className="flex items-center gap-1.5 mt-1">
@@ -113,7 +116,7 @@ export const ProductDetailPage = () => {
                 )}
               </div>
               <ShieldCheck className="ml-auto w-5 h-5 text-brand-500" />
-            </div>
+            </Link>
           </div>
 
           {/* Right — Checkout card */}

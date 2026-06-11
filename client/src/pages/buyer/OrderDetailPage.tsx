@@ -450,18 +450,18 @@ export const OrderDetailPage = () => {
             {isBuyer ? 'Seller' : 'Buyer'}
           </p>
           {isBuyer ? (
-            <div className="flex items-center gap-3">
+            <Link to={`/sellers/${order.product.seller.username}`} className="flex items-center gap-3 group">
               <div className="w-10 h-10 rounded-full bg-brand-600 flex items-center justify-center text-white font-bold flex-shrink-0">
                 {(order.product.seller.displayName?.[0] || order.product.seller.username[0]).toUpperCase()}
               </div>
               <div>
-                <p className="text-white font-medium text-sm">
+                <p className="text-white font-medium text-sm group-hover:text-brand-400 transition-colors">
                   {order.product.seller.displayName || order.product.seller.username}
                 </p>
                 <p className="text-gray-500 text-xs">@{order.product.seller.username}</p>
               </div>
               <ShieldCheck className="w-4 h-4 text-brand-500 ml-auto" />
-            </div>
+            </Link>
           ) : (
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center text-white font-bold flex-shrink-0">

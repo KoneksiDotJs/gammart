@@ -29,8 +29,25 @@ export const authRepository = {
   },
 
   /**
-   * Find a user by ID. Used for auth token validation.
+   * Find a user by username for public seller profile.
    */
+  findByUsername: (username: string) => {
+    return prisma.user.findUnique({
+      where: { username },
+      select: {
+        id: true,
+        username: true,
+        displayName: true,
+        avatarUrl: true,
+        bio: true,
+        role: true,
+        isVerified: true,
+        createdAt: true,
+      },
+    })
+  },
+
+  /**
   findById: (id: string) => {
     return prisma.user.findUnique({
       where: { id },

@@ -111,9 +111,13 @@ export const ProductListingPage = () => {
                       <span className="text-brand-500 font-bold text-sm">
                         {formatPrice(product.price)}
                       </span>
-                      <span className="text-gray-500 text-xs">
+                      <Link
+                        to={`/sellers/${product.seller.username}`}
+                        onClick={(e) => e.stopPropagation()}
+                        className="text-gray-500 hover:text-gray-300 text-xs transition-colors"
+                      >
                         @{product.seller.username}
-                      </span>
+                      </Link>
                     </div>
                   </div>
                 </Link>

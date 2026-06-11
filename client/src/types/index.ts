@@ -80,6 +80,17 @@ export interface Review {
   comment?: string
   createdAt: string
 }
+
+export interface SellerProfile {
+  seller: Pick<User, 'id' | 'username' | 'displayName' | 'avatarUrl' | 'bio' | 'role' | 'isVerified' | 'createdAt'>
+  stats: {
+    totalListings: number
+    completedOrders: number
+    rating: SellerReviewStats
+  }
+  listings: Product[]
+}
+
 export interface SellerReviewStats {
   average: number | null
   total: number

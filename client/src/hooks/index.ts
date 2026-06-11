@@ -128,3 +128,11 @@ export const useSellerReviews = (sellerId: string) => {
     enabled: !!sellerId,
   })
 }
+
+export const useSellerProfile = (username: string) => {
+  return useQuery({
+    queryKey: ['seller-profile', username],
+    queryFn: () => reviewApi.getSellerProfile(username),
+    enabled: !!username,
+  })
+}
