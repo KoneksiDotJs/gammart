@@ -10,6 +10,7 @@ import orderRoutes from './routes/order.routes'
 import paymentRoutes from './routes/payment.routes'
 import reviewRoutes from './routes/review.routes'
 import sellerRoutes from './routes/seller.routes'
+import disputeRoutes from './routes/dispute.routes'
 
 const app = express()
 
@@ -40,6 +41,8 @@ app.use('/api/orders', orderRoutes)
 app.use('/api/orders/:orderId/review', reviewRoutes)
 app.use('/api/payments', paymentRoutes)
 app.use('/api/sellers', sellerRoutes)
+app.use('/api/orders', disputeRoutes)
+app.use('/api/disputes', disputeRoutes)
 
 // ─── 404 Handler ──────────────────────────────────────────────────────────────
 

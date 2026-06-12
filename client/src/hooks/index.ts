@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { productApi, ProductFilters } from '../services/product.service'
 import { orderApi } from '../services/order.service'
 import { reviewApi } from '../services/review.service'
+import { disputeApi, DisputeReason } from '../services/dispute.service'
 import { PaymentMethod } from '../types'
 
 // ─── Product Hooks ────────────────────────────────────────────────────────────
@@ -134,5 +135,29 @@ export const useSellerProfile = (username: string) => {
     queryKey: ['seller-profile', username],
     queryFn: () => reviewApi.getSellerProfile(username),
     enabled: !!username,
+  })
+}
+
+// ─── Dispute Hooks ────────────────────────────────────────────────────────────
+
+export const useOrderDispute = (orderId: string) => {
+  return useQuery({
+    queryKey: ['dispute', orderId],
+    queryFn: () => disputeApi.getDisputeByOrder(orderId),
+    enabled: !!orderId,
+  })
+}
+
+export const useOpenDispute = (orderId: string) => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (data: { reason: DisputeReason; details?: string }) =>
+      disputeApi.openDispute(orderId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['dispute', orderId] })
+      queryClient.invalidateQueries({ queryKey: ['orders', orderId] })
+      queryClient.invalidateQueries({ queryKey: ['my-orders'] })
+    },
   })
 }

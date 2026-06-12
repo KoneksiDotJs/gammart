@@ -47,7 +47,6 @@ export const authRepository = {
     })
   },
 
-  /**
   findById: (id: string) => {
     return prisma.user.findUnique({
       where: { id },

@@ -67,6 +67,7 @@ model User {
   buyerOrders  Order[]   @relation("BuyerOrders")
   reviews      Review[]  @relation("BuyerReviews")
   receivedReviews Review[] @relation("SellerReviews")
+  disputes     Dispute[]
 
   @@map("users")
 }
@@ -106,6 +107,7 @@ model Order {
 
   payment       Payment?
   review        Review?
+  dispute       Dispute?
 
   @@map("orders")
 }
@@ -139,4 +141,19 @@ model Review {
   createdAt  DateTime @default(now()) @map("created_at")
 
   @@map("reviews")
+}
+
+model Dispute {
+  id         String   @id @default(cuid())
+  order      Order    @relation(fields: [orderId], references: [id])
+  orderId    String   @unique @map("order_id")
+  raisedBy   User     @relation(fields: [raisedById], references: [id])
+  raisedById String   @map("raised_by_id")
+  reason     String
+  details    String?
+  resolvedAt DateTime? @map("resolved_at")
+  resolution String?
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@map("disputes")
 }

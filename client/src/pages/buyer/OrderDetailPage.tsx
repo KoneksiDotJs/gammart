@@ -9,6 +9,7 @@ import { useOrder, useCompleteOrder } from '../../hooks'
 import { useAuthStore } from '../../store/auth.store'
 import { OrderStatus } from '../../types'
 import { ReviewSection } from '../../components/ui/ReviewSection'
+import { DisputeSection } from '../../components/ui/DisputeSection'
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -493,6 +494,13 @@ export const OrderDetailPage = () => {
 
         {/* Review section — only shown to buyer on completed orders */}
         <ReviewSection
+          orderId={order.id}
+          isBuyer={isBuyer}
+          orderStatus={order.status}
+        />
+
+        {/* Dispute section — only shown to buyer on paid/disputed orders */}
+        <DisputeSection
           orderId={order.id}
           isBuyer={isBuyer}
           orderStatus={order.status}
