@@ -3,7 +3,29 @@ import { productApi, ProductFilters } from '../services/product.service'
 import { orderApi } from '../services/order.service'
 import { reviewApi } from '../services/review.service'
 import { disputeApi, DisputeReason } from '../services/dispute.service'
+import { authApi } from '../services/auth.service'
+import { useAuthStore } from '../store/auth.store'
 import { PaymentMethod } from '../types'
+
+// ─── Auth Hooks ───────────────────────────────────────────────────────────────
+
+export const useUpdateProfile = () => {
+  // const { user, login } = useAuthStore()
+
+  return useMutation({
+    mutationFn: authApi.updateProfile,
+    onSuccess: (updatedUser) => {
+      // Patch the Zustand store directly so navbar updates immediately
+      useAuthStore.setState((s) => ({ ...s, user: { ...s.user!, ...updatedUser } }))
+    },
+  })
+}
+
+export const useUpdatePassword = () => {
+  return useMutation({
+    mutationFn: authApi.updatePassword,
+  })
+}
 
 // ─── Product Hooks ────────────────────────────────────────────────────────────
 

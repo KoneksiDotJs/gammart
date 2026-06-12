@@ -87,11 +87,44 @@ export const authService = {
    */
   getMe: async (userId: string) => {
     const user = await authRepository.findById(userId)
+    if (!user) throw new AppError('User not found', 404, 'NOT_FOUND')
+    return user
+  },
 
-    if (!user) {
-      throw new AppError('User not found', 404, 'NOT_FOUND')
+  /**
+   * Update display name, bio, and avatar URL.
+   * Email and username are not changeable for security reasons.
+   */
+  updateProfile: async (
+    userId: string,
+    data: { displayName?: string; bio?: string; avatarUrl?: string }
+  ) => {
+    const user = await authRepository.findById(userId)
+    if (!user) throw new AppError('User not found', 404, 'NOT_FOUND')
+    return authRepository.updateProfile(userId, data)
+  },
+
+  /**
+   * Change password — requires the current password for verification.
+   */
+  updatePassword: async (
+    userId: string,
+    currentPassword: string,
+    newPassword: string
+  ) => {
+    const user = await authRepository.findByEmail(
+      (await authRepository.findById(userId))!.email
+    )
+    if (!user) throw new AppError('User not found', 404, 'NOT_FOUND')
+
+    const isValid = await bcrypt.compare(currentPassword, user.passwordHash)
+    if (!isValid) {
+      throw new AppError('Current password is incorrect', 401, 'INVALID_CREDENTIALS')
     }
 
-    return user
+    const newHash = await bcrypt.hash(newPassword, 12)
+    await authRepository.updatePassword(userId, newHash)
+
+    return { success: true }
   },
 }

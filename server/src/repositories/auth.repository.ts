@@ -57,9 +57,39 @@ export const authRepository = {
         role: true,
         displayName: true,
         avatarUrl: true,
+        bio: true,
         isVerified: true,
         createdAt: true,
       },
+    })
+  },
+
+  updateProfile: (
+    id: string,
+    data: { displayName?: string; bio?: string; avatarUrl?: string }
+  ) => {
+    return prisma.user.update({
+      where: { id },
+      data,
+      select: {
+        id: true,
+        email: true,
+        username: true,
+        role: true,
+        displayName: true,
+        avatarUrl: true,
+        bio: true,
+        isVerified: true,
+        createdAt: true,
+      },
+    })
+  },
+
+  updatePassword: (id: string, passwordHash: string) => {
+    return prisma.user.update({
+      where: { id },
+      data: { passwordHash },
+      select: { id: true },
     })
   },
 

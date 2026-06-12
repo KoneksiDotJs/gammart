@@ -14,6 +14,7 @@ import { ProductDetailPage } from './pages/buyer/ProductDetailPage'
 import { OrdersPage } from './pages/buyer/OrdersPage'
 import { OrderDetailPage } from './pages/buyer/OrderDetailPage'
 import { SellerProfilePage } from './pages/buyer/SellerProfilePage'
+import { ProfileSettingsPage } from './pages/user/ProfileSettingsPage'
 import { CreateListingPage } from './pages/seller/CreateListingPage'
 import { SellerDashboard } from './pages/seller/SellerDashboard'
 
@@ -49,6 +50,7 @@ const AppRoutes = () => {
         <Route element={<ProtectedRoute />}>
           <Route path="/orders" element={<OrdersPage />} />
           <Route path="/orders/:id" element={<OrderDetailPage />} />
+          <Route path="/profile" element={<ProfileSettingsPage />} />
         </Route>
 
         {/* Protected — sellers only */}

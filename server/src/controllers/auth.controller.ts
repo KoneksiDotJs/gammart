@@ -6,30 +6,30 @@ import { AuthenticatedRequest } from '../types'
 export const authController = {
   register: asyncHandler(async (req: Request, res: Response) => {
     const result = await authService.register(req.body)
-
-    res.status(201).json({
-      success: true,
-      message: 'Registration successful',
-      data: result,
-    })
+    res.status(201).json({ success: true, message: 'Registration successful', data: result })
   }),
 
   login: asyncHandler(async (req: Request, res: Response) => {
     const result = await authService.login(req.body)
-
-    res.json({
-      success: true,
-      message: 'Login successful',
-      data: result,
-    })
+    res.json({ success: true, message: 'Login successful', data: result })
   }),
 
   getMe: asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
     const user = await authService.getMe(req.user!.id)
+    res.json({ success: true, data: user })
+  }),
 
-    res.json({
-      success: true,
-      data: user,
-    })
+  updateProfile: asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+    const user = await authService.updateProfile(req.user!.id, req.body)
+    res.json({ success: true, message: 'Profile updated', data: user })
+  }),
+
+  updatePassword: asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+    await authService.updatePassword(
+      req.user!.id,
+      req.body.currentPassword,
+      req.body.newPassword
+    )
+    res.json({ success: true, message: 'Password updated successfully' })
   }),
 }

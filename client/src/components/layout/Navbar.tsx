@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom'
-import { ShoppingBag, LogOut, PlusSquare, Package, TrendingUp } from 'lucide-react'
+import { ShoppingBag, User, LogOut, PlusSquare, Package, TrendingUp } from 'lucide-react'
 import { useAuthStore } from '../../store/auth.store'
 
 export const Navbar = () => {
@@ -18,7 +18,7 @@ export const Navbar = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 text-white font-bold text-xl">
             <ShoppingBag className="w-6 h-6 text-brand-500" />
-            Gammart
+            GameMarket
           </Link>
 
           {/* Nav links */}
@@ -61,8 +61,11 @@ export const Navbar = () => {
                     to="/profile"
                     className="flex items-center gap-2 text-gray-300 hover:text-white text-sm transition-colors"
                   >
-                    <div className="w-7 h-7 rounded-full bg-brand-600 flex items-center justify-center text-white text-xs font-bold">
-                      {user?.displayName?.[0]?.toUpperCase() || user?.username?.[0]?.toUpperCase()}
+                    <div className="w-7 h-7 rounded-full bg-brand-600 flex items-center justify-center text-white text-xs font-bold overflow-hidden">
+                      {user?.avatarUrl
+                        ? <img src={user.avatarUrl} alt="" className="w-full h-full object-cover" />
+                        : (user?.displayName?.[0]?.toUpperCase() || user?.username?.[0]?.toUpperCase())
+                      }
                     </div>
                     <span>{user?.displayName || user?.username}</span>
                   </Link>
