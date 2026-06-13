@@ -1,9 +1,10 @@
 import { useEffect } from 'react'
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 import { useAuthStore } from './store/auth.store'
 import { Navbar } from './components/layout/Navbar'
+import { Footer } from './components/layout/Footer'
 import { ProtectedRoute } from './components/layout/ProtectedRoute'
 
 // Pages
@@ -27,15 +28,18 @@ const queryClient = new QueryClient({
   },
 })
 
-const AppRoutes = () => {
+const AppLayout = () => {
   const { initAuth } = useAuthStore()
 
   useEffect(() => {
     initAuth()
   }, [initAuth])
+  
+  const { pathname } = useLocation()
+  const hideFooter = ['/login', '/register'].includes(pathname)
 
   return (
-    <BrowserRouter>
+    <>
       <Navbar />
       <Routes>
         {/* Public */}
@@ -61,6 +65,21 @@ const AppRoutes = () => {
 
         <Route path="*" element={<Navigate to="/products" replace />} />
       </Routes>
+      {!hideFooter && <Footer />}
+    </>
+  )
+}
+
+const AppRoutes = () => {
+  const { initAuth } = useAuthStore()
+
+  useEffect(() => {
+    initAuth()
+  }, [initAuth])
+
+  return (
+    <BrowserRouter>
+      <AppLayout />
     </BrowserRouter>
   )
 }
