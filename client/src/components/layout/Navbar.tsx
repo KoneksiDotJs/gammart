@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom'
-import { ShoppingBag, User, LogOut, PlusSquare, Package, TrendingUp } from 'lucide-react'
+import { ShoppingBag, LogOut, PlusSquare, Package, TrendingUp } from 'lucide-react'
 import { useAuthStore } from '../../store/auth.store'
 
 export const Navbar = () => {
@@ -29,6 +29,15 @@ export const Navbar = () => {
 
             {isAuthenticated ? (
               <>
+                {user?.role === 'BUYER' && (
+                  <Link
+                    to="/seller/onboarding"
+                    className="text-gray-300 hover:text-white text-sm transition-colors"
+                  >
+                    Become a Seller
+                  </Link>
+                )}
+
                 {(user?.role === 'SELLER' || user?.role === 'ADMIN') && (
                   <>
                     <Link

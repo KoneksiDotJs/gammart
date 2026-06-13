@@ -5,6 +5,7 @@ import { reviewApi } from '../services/review.service'
 import { disputeApi, DisputeReason } from '../services/dispute.service'
 import { authApi } from '../services/auth.service'
 import { useAuthStore } from '../store/auth.store'
+import { applicationApi } from '../services/application.service'
 import { PaymentMethod } from '../types'
 
 // ─── Auth Hooks ───────────────────────────────────────────────────────────────
@@ -157,6 +158,26 @@ export const useSellerProfile = (username: string) => {
     queryKey: ['seller-profile', username],
     queryFn: () => reviewApi.getSellerProfile(username),
     enabled: !!username,
+  })
+}
+
+// ─── Application Hooks ────────────────────────────────────────────────────────
+
+export const useMyApplication = () => {
+  return useQuery({
+    queryKey: ['my-application'],
+    queryFn: applicationApi.getMyApplication,
+  })
+}
+
+export const useApply = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: applicationApi.apply,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['my-application'] })
+    },
   })
 }
 

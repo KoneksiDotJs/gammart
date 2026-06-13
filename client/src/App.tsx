@@ -18,6 +18,7 @@ import { SellerProfilePage } from './pages/buyer/SellerProfilePage'
 import { ProfileSettingsPage } from './pages/user/ProfileSettingsPage'
 import { CreateListingPage } from './pages/seller/CreateListingPage'
 import { SellerDashboard } from './pages/seller/SellerDashboard'
+import { SellerOnboardingPage } from './pages/seller/SellerOnboardingPage'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -55,6 +56,7 @@ const AppLayout = () => {
           <Route path="/orders" element={<OrdersPage />} />
           <Route path="/orders/:id" element={<OrderDetailPage />} />
           <Route path="/profile" element={<ProfileSettingsPage />} />
+          <Route path="/seller/onboarding" element={<SellerOnboardingPage />} />
         </Route>
 
         {/* Protected — sellers only */}

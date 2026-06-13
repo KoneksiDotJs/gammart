@@ -63,11 +63,12 @@ model User {
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @updatedAt @map("updated_at")
 
-  products     Product[]
-  buyerOrders  Order[]   @relation("BuyerOrders")
-  reviews      Review[]  @relation("BuyerReviews")
-  receivedReviews Review[] @relation("SellerReviews")
-  disputes     Dispute[]
+  products        Product[]
+  buyerOrders     Order[]            @relation("BuyerOrders")
+  reviews         Review[]           @relation("BuyerReviews")
+  receivedReviews Review[]           @relation("SellerReviews")
+  disputes        Dispute[]
+  sellerApplication SellerApplication?
 
   @@map("users")
 }
@@ -156,4 +157,26 @@ model Dispute {
   createdAt  DateTime @default(now()) @map("created_at")
 
   @@map("disputes")
+}
+
+enum ApplicationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model SellerApplication {
+  id          String            @id @default(cuid())
+  user        User              @relation(fields: [userId], references: [id])
+  userId      String            @unique @map("user_id")  // one application per user
+  storeName   String            @map("store_name")
+  reason      String
+  experience  String?
+  status      ApplicationStatus @default(PENDING)
+  reviewedBy  String?           @map("reviewed_by")      // admin user id
+  reviewNote  String?           @map("review_note")
+  reviewedAt  DateTime?         @map("reviewed_at")
+  createdAt   DateTime          @default(now()) @map("created_at")
+
+  @@map("seller_applications")
 }
