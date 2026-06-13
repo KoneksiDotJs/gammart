@@ -19,6 +19,7 @@ import { ProfileSettingsPage } from './pages/user/ProfileSettingsPage'
 import { CreateListingPage } from './pages/seller/CreateListingPage'
 import { SellerDashboard } from './pages/seller/SellerDashboard'
 import { SellerOnboardingPage } from './pages/seller/SellerOnboardingPage'
+import { AdminPanel } from './pages/admin/AdminPanel'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -35,7 +36,7 @@ const AppLayout = () => {
   useEffect(() => {
     initAuth()
   }, [initAuth])
-  
+
   const { pathname } = useLocation()
   const hideFooter = ['/login', '/register'].includes(pathname)
 
@@ -63,6 +64,11 @@ const AppLayout = () => {
         <Route element={<ProtectedRoute allowedRoles={['SELLER', 'ADMIN']} />}>
           <Route path="/seller/listings/new" element={<CreateListingPage />} />
           <Route path="/seller/dashboard" element={<SellerDashboard />} />
+        </Route>
+
+        {/* Protected — admin only */}
+        <Route element={<ProtectedRoute allowedRoles={['ADMIN']} />}>
+          <Route path="/admin" element={<AdminPanel />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/products" replace />} />

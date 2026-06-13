@@ -6,6 +6,7 @@ import { disputeApi, DisputeReason } from '../services/dispute.service'
 import { authApi } from '../services/auth.service'
 import { useAuthStore } from '../store/auth.store'
 import { applicationApi } from '../services/application.service'
+import { adminApi } from '../services/admin.service'
 import { PaymentMethod } from '../types'
 
 // ─── Auth Hooks ───────────────────────────────────────────────────────────────
@@ -178,6 +179,62 @@ export const useApply = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['my-application'] })
     },
+  })
+}
+
+// ─── Admin Hooks ──────────────────────────────────────────────────────────────
+
+export const useAdminStats = () =>
+  useQuery({ queryKey: ['admin-stats'], queryFn: adminApi.getStats })
+
+export const useAdminOrders = () =>
+  useQuery({ queryKey: ['admin-orders'], queryFn: adminApi.getRecentOrders })
+
+export const useAdminUsers = (params?: { role?: string; search?: string; page?: number }) =>
+  useQuery({ queryKey: ['admin-users', params], queryFn: () => adminApi.getUsers(params) })
+
+export const useAdminApplications = (status?: string) =>
+  useQuery({
+    queryKey: ['admin-applications', status],
+    queryFn: () => adminApi.getApplications(status),
+  })
+
+export const useAdminDisputes = () =>
+  useQuery({ queryKey: ['admin-disputes'], queryFn: adminApi.getDisputes })
+
+export const useApproveApplication = () => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: ({ id, reviewNote }: { id: string; reviewNote?: string }) =>
+      adminApi.approveApplication(id, reviewNote),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['admin-applications'] }),
+  })
+}
+
+export const useRejectApplication = () => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: ({ id, reviewNote }: { id: string; reviewNote?: string }) =>
+      adminApi.rejectApplication(id, reviewNote),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['admin-applications'] }),
+  })
+}
+
+export const useResolveDispute = () => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: ({ id, resolution }: { id: string; resolution: string }) =>
+      adminApi.resolveDispute(id, resolution),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['admin-disputes'] }),
+  })
+}
+
+export const useSetUserVerified = () => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: ({ userId, isVerified }: { userId: string; isVerified: boolean }) =>
+      adminApi.setUserVerified(userId, isVerified),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['admin-users'] }),
   })
 }
 
