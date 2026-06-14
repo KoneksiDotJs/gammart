@@ -62,8 +62,8 @@ const DisputeDisplay = ({
           <p className="text-gray-400 text-xs leading-relaxed">
             Our team has been notified and will review this dispute within 1–2 business days.
             Please do not close this page or take any action until you hear from us at{' '}
-            <a href="mailto:support@gamemarket.id" className="text-brand-400 underline">
-              support@gamemarket.id
+            <a href="mailto:support@gammart.id" className="text-brand-400 underline">
+              support@gammart.id
             </a>
           </p>
         </div>

@@ -199,7 +199,7 @@ export const ProductDetailPage = () => {
 
               <p className="text-gray-600 text-xs text-center flex items-center justify-center gap-1">
                 <ShieldCheck className="w-3 h-3" />
-                Transactions are protected by GameMarket
+                Transactions are protected by Gammart
               </p>
             </div>
           </div>

@@ -197,7 +197,7 @@ const ApplicationForm = () => {
       {/* Reason */}
       <div>
         <label className="block text-gray-300 text-sm font-medium mb-1.5">
-          Why do you want to sell on GameMarket?
+          Why do you want to sell on Gammart?
         </label>
         <textarea
           value={form.reason}
@@ -281,7 +281,7 @@ export const SellerOnboardingPage = () => {
         {/* Hero */}
         <div className="text-center mb-10">
           <div className="inline-flex items-center gap-2 bg-brand-600/20 border border-brand-600/30 text-brand-400 text-sm px-4 py-1.5 rounded-full mb-4">
-            <TrendingUp className="w-3.5 h-3.5" /> Start earning on GameMarket
+            <TrendingUp className="w-3.5 h-3.5" /> Start earning on Gammart
           </div>
           <h1 className="text-white text-3xl sm:text-4xl font-bold mb-3">
             Become a Seller
@@ -298,7 +298,7 @@ export const SellerOnboardingPage = () => {
 
             {/* Perks */}
             <div>
-              <h2 className="text-white font-semibold mb-4">Why sell on GameMarket?</h2>
+              <h2 className="text-white font-semibold mb-4">Why sell on Gammart?</h2>
               <div className="space-y-3">
                 {PERKS.map(({ icon, title, desc }) => (
                   <div key={title} className="flex items-start gap-3 bg-gray-900 border border-gray-800 rounded-xl p-4">

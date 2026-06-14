@@ -19,7 +19,7 @@ const app = express()
 // ─── Global Middleware ────────────────────────────────────────────────────────
 
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  origin: env.frontendUrl,
   credentials: true,
 }))
 
@@ -41,10 +41,10 @@ app.use('/api/auth', authRoutes)
 app.use('/api/products', productRoutes)
 app.use('/api/orders', orderRoutes)
 app.use('/api/orders/:orderId/review', reviewRoutes)
+app.use('/api/orders', disputeRoutes)   // POST/GET /api/orders/:id/dispute
 app.use('/api/payments', paymentRoutes)
 app.use('/api/sellers', sellerRoutes)
-app.use('/api/orders', disputeRoutes)
-app.use('/api/disputes', disputeRoutes)
+app.use('/api/disputes', disputeRoutes) // GET /api/disputes (admin list)
 app.use('/api/applications', applicationRoutes)
 app.use('/api/admin', adminRoutes)
 

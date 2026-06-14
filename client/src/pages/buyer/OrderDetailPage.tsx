@@ -262,7 +262,7 @@ export const OrderDetailPage = () => {
         <div className={`rounded-xl border px-4 py-3 mb-6 text-sm ${statusCfg.bg} ${statusCfg.border} ${statusCfg.color}`}>
           {statusCfg.description}
           {order.status === 'DISPUTED' && (
-            <a href="mailto:support@gamemarket.id" className="underline ml-1 inline-flex items-center gap-1">
+            <a href="mailto:support@gammart.id" className="underline ml-1 inline-flex items-center gap-1">
               Contact support <ExternalLink className="w-3 h-3" />
             </a>
           )}

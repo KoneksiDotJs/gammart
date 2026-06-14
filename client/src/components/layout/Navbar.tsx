@@ -18,7 +18,7 @@ export const Navbar = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 text-white font-bold text-xl">
             <ShoppingBag className="w-6 h-6 text-brand-500" />
-            GameMarket
+            Gammart
           </Link>
 
           {/* Nav links */}

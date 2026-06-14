@@ -40,7 +40,7 @@ export const RegisterPage = () => {
       <div className="w-full max-w-md">
         <div className="flex items-center justify-center gap-2 mb-8">
           <ShoppingBag className="w-8 h-8 text-brand-500" />
-          <span className="text-white font-bold text-2xl">GameMarket</span>
+          <span className="text-white font-bold text-2xl">Gammart</span>
         </div>
 
         <div className="bg-gray-900 rounded-2xl border border-gray-800 p-8">

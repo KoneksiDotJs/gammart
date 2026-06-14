@@ -21,8 +21,8 @@ const LINKS = {
     { label: 'Register',        to: '/register' },
   ],
   Support: [
-    { label: 'Contact Us',      href: 'mailto:support@gamemarket.id' },
-    { label: 'Report Issue',    href: 'mailto:support@gamemarket.id' },
+    { label: 'Contact Us',      href: 'mailto:support@gammart.id' },
+    { label: 'Report Issue',    href: 'mailto:support@gammart.id' },
   ],
 }
 
@@ -60,17 +60,17 @@ export const Footer = () => {
           <div className="col-span-2 sm:col-span-3 lg:col-span-1">
             <Link to="/" className="flex items-center gap-2 mb-3">
               <ShoppingBag className="w-5 h-5 text-brand-500" />
-              <span className="text-white font-bold">GameMarket</span>
+              <span className="text-white font-bold">Gammart</span>
             </Link>
             <p className="text-gray-500 text-sm leading-relaxed max-w-xs">
               Indonesia's trusted marketplace for game accounts, top-ups, and boosting services.
             </p>
             <a
-              href="mailto:support@gamemarket.id"
+              href="mailto:support@gammart.id"
               className="inline-flex items-center gap-1.5 text-brand-500 hover:text-brand-400 text-sm mt-4 transition-colors"
             >
               <Mail className="w-3.5 h-3.5" />
-              support@gamemarket.id
+              support@gammart.id
             </a>
           </div>
 
@@ -108,7 +108,7 @@ export const Footer = () => {
       <div className="border-t border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between flex-wrap gap-3">
           <p className="text-gray-600 text-xs">
-            © {year} GameMarket. All rights reserved.
+            © {year} Gammart. All rights reserved.
           </p>
           <div className="flex items-center gap-4">
             <span className="text-gray-700 text-xs">Privacy Policy</span>

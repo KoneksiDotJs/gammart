@@ -1,5 +1,5 @@
 /**
- * Email templates for GameMarket transactional emails.
+ * Email templates for Gammart transactional emails.
  * All templates return a { subject, html } object.
  * Designed to render cleanly in Gmail, Outlook, and mobile clients.
  */
@@ -19,7 +19,7 @@ const layout = (content: string) => `
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GameMarket</title>
+  <title>Gammart</title>
 </head>
 <body style="margin:0;padding:0;background:#0f172a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#0f172a;padding:32px 16px;">
@@ -36,7 +36,7 @@ const layout = (content: string) => `
                     <span style="color:#fff;font-size:18px;font-weight:bold;line-height:32px;">G</span>
                   </td>
                   <td style="padding-left:10px;color:#fff;font-size:18px;font-weight:700;vertical-align:middle;">
-                    GameMarket
+                    Gammart
                   </td>
                 </tr>
               </table>
@@ -53,8 +53,8 @@ const layout = (content: string) => `
           <!-- Footer -->
           <tr>
             <td style="padding-top:24px;text-align:center;color:#475569;font-size:12px;line-height:1.6;">
-              <p style="margin:0;">You're receiving this because you have an account on GameMarket.</p>
-              <p style="margin:4px 0 0;">© ${new Date().getFullYear()} GameMarket. All rights reserved.</p>
+              <p style="margin:0;">You're receiving this because you have an account on Gammart.</p>
+              <p style="margin:4px 0 0;">© ${new Date().getFullYear()} Gammart. All rights reserved.</p>
             </td>
           </tr>
 

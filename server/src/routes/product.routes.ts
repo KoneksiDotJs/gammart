@@ -19,6 +19,11 @@ const createProductSchema = z.object({
 
 // Public routes
 router.get('/', productController.getProducts)
+
+// Static routes MUST come before dynamic /:id to avoid Express
+// matching "my" as the :id param
+router.get('/my/listings', authenticate, productController.getMyProducts)
+
 router.get('/:id', productController.getProductById)
 
 // Protected routes (seller only)
@@ -29,8 +34,6 @@ router.post(
   validate(createProductSchema),
   productController.createProduct
 )
-
-router.get('/my/listings', authenticate, productController.getMyProducts)
 
 router.patch(
   '/:id/deactivate',
